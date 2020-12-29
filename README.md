@@ -1,4 +1,4 @@
-![build](https://github.com/haraldF/maze/workflows/.github/workflows/node.js.yml/badge.svg)
+![Node.js CI](https://github.com/haraldF/maze/workflows/Node.js%20CI/badge.svg)
 
 
 # Maze
