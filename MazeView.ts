@@ -1,9 +1,9 @@
 import { Maze, TileType } from "./Maze";
 
-
 export class MazeView {
 
-    public G?: Map<number, number>;
+    private G?: Map<number, number>;
+    private visited?: Set<number>;
 
     constructor(public readonly maze: Maze, public readonly canvas: HTMLCanvasElement) {}
 
@@ -23,28 +23,35 @@ export class MazeView {
         const tileWidth = this.canvas.width / this.maze.width;
         const tileHeight = this.canvas.height / this.maze.height;
 
-        for (let y = 0; y < this.maze.height; ++y) {
-            const row = this.maze.tiles[y];
-            for (let x = 0; x < this.maze.width; ++x) {
-                if (row[x] == TileType.Wall) {
+        for (let x = 0; x < this.maze.height; ++x) {
+            const row = this.maze.tiles[x];
+            for (let y = 0; y < this.maze.width; ++y) {
+                if (row[y] == TileType.Wall) {
                     ctx.fillStyle = "#000000";
                     ctx.fillRect(
-                        x * tileWidth,
-                        y * tileHeight,
+                        y * tileWidth,
+                        x * tileHeight,
                         tileWidth,
                         tileHeight)
-                } else if (row[x] == TileType.Robot) {
+                } else if (row[y] == TileType.Robot) {
                     ctx.fillStyle = "#00AA00";
                     ctx.fillRect(
-                        x * tileWidth,
-                        y * tileHeight,
+                        y * tileWidth,
+                        x * tileHeight,
                         tileWidth,
                         tileHeight)
-                } else if (x === this.maze.width - 1 && y === this.maze.height - 1) {
+                } else if (y === this.maze.width - 1 && x === this.maze.height - 1) {
                     ctx.fillStyle = "#0000FF";
                     ctx.fillRect(
-                        x * tileWidth,
-                        y * tileHeight,
+                        y * tileWidth,
+                        x * tileHeight,
+                        tileWidth,
+                        tileHeight)
+                } else if (this.visited?.has(this.maze.toIndex(x, y))) {
+                    ctx.fillStyle = "#eeeeee";
+                    ctx.fillRect(
+                        y * tileWidth,
+                        x * tileHeight,
                         tileWidth,
                         tileHeight)
                 }
@@ -87,5 +94,38 @@ export class MazeView {
                 ctx.fillText(gValue.toFixed(4), row * tileWidth + tileWidth / 2, column * tileHeight + tileHeight / 2, tileWidth);
             }
         }
+    }
+
+    solve(G: Map<number, number>) {
+        const visited = new Set<number>([0]);
+        let state = this.maze.getState();
+
+        while (state.x !== this.maze.height -1 || state.y !== this.maze.width - 1) {
+            const allowedMoves = this.maze.getAllowedMoves(state)!;
+            const bestMoveIndex = allowedMoves.map(action =>
+                this.maze.applied(action, state.x, state.y)
+            ).map(state =>
+                visited.has(state.index) ? undefined : G.get(state.index)
+            ).reduce((maxIndex: number, currentValue, index, array) => {
+                if (currentValue !== undefined && (maxIndex === -1 || array[maxIndex]! < currentValue)) {
+                    return index;
+                }
+                return maxIndex;
+            }, -1);
+
+            if (bestMoveIndex === -1) // no best move - maze not solvable. Freak out
+                break;
+
+
+            state = this.maze.applied(allowedMoves[bestMoveIndex], state.x, state.y);
+            visited.add(state.index);
+        }
+
+        return visited;
+    }
+
+    setG(G: Map<number, number>) {
+        this.G = G;
+        this.visited = this.solve(G);
     }
 }

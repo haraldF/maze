@@ -38,7 +38,7 @@ export class Maze {
         }
     }
 
-    private applied(action: Action, x: number, y: number): State {
+    public applied(action: Action, x: number, y: number): State {
         const move = ActionSpace[action];
         return this.newState(x + move.x, y + move.y);
     }

@@ -136,7 +136,6 @@ async function start() {
             robot.updateStateHistory(newState, reward);
 
             if (maze.steps > 1000) {
-                console.log("timeout after 1000 steps");
                 maze.setRobotPosition(maze.height -1, maze.width - 1);
             }
         }
@@ -150,7 +149,7 @@ async function start() {
         // await sleep(1000);
     }
 
-    mazeView.G = robot.G;
+    mazeView.setG(robot.G);
     mazeView.render();
     plotMoveHistory(moveHistory);
 }
