@@ -18,11 +18,12 @@ jobs:
       with:
         node-version: 14.x
     - name: Building App
-      run: npm ci
-      run: npm run build
-      run: cp index.html dist/
-    -name: Deploy to GitHub Pages
-      if: ${{ github.event_name == 'push' }}
+      run: |
+        npm ci
+        npm run build
+        cp index.html dist/
+    - name: Deploy to GitHub Pages
+      if: ${{ success() && github.event_name == 'push' }}
       uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
