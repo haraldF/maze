@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze</title>
+    <style>
+    canvas {
+        width: 50vw;
+        height: 50vw;
+        display: block;
+        image-rendering: pixelated;
+    }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>What is it?</h1>
+    <div>
+        <p>This is a little project that tries to solve a maze using reinforcement learning. Choose your maze size, then click on any tile to toggle a wall. When your maze is ready, you can tweak the hyperparameters below the maze. Alpha is the learning rate, and epsilon is the rate between exploration and exploitation. Once done, hit "start". The "StepCount" should converge towards the lowest number. Note that learning runs are capped at 1000 moves. If your StepCount stays around 1000, then either your maze is not solvable or the hyperparameters ensure that the model can't learn.</p>
+        <p>Note: The maze is saved in the URL, you can save or share your maze by simply copying the URL.</p>
+        <p>Note2: The start point is always top-left (green), the end point is always bottom right (blue). These two squares must not contain walls.</p>
+    </div>
+    <h1>Maze</h1>
+    <div>
+        Maze: width <input type="number" min="1" max="127" id="width" value="6" step="1" /> height: <input type="number" min="1" max="127" id="height" value="6" step="1" />
+    </div>
+    <br/>
+    <canvas id="maze"></canvas>
+    <br/>
+    <h1>Hyperparameters</h1>
+    <div>
+        Alpha: <input type="number" min="0.0" max="1.0" value="0.1" step="0.1" id="alpha" />
+        Epsilon: <input type="number" min="0.0" max="1.0" value="0.25" step="0.05" id="epsilon" />
+        <button id="startButton">Start</button>
+    </div>
+    <div id="plot" style="width:100vw;height:500px;"></div>
+
+    <script src="main.js"></script>
+</body>
+</html>
