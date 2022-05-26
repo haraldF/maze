@@ -24,7 +24,7 @@ jobs:
         cp index.html dist/
     - name: Deploy to GitHub Pages
       if: ${{ success() && github.event_name == 'push' }}
-      uses: crazy-max/ghaction-github-pages@v2
+      uses: crazy-max/ghaction-github-pages@v3
       with:
         target_branch: gh-pages
         build_dir: dist
